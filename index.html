@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loading...</title>
+    <style>
+        body {
+            background-color: black;
+            color: lime;
+            font-family: monospace;
+            overflow: hidden;
+        }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-size: 2em;
+            color: white;
+        }
+        .matrix {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            white-space: nowrap;
+            display: none;
+        }
+        #stopButton {
+            display: none;
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            z-index: 1000;
+        }
+        #errorScreen {
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            color: red;
+            font-family: monospace;
+            font-size: 1.5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            animation: flashRed 1s infinite alternate;
+            z-index: 999;
+        }
+        @keyframes flashRed {
+            0% { background-color: black; }
+            100% { background-color: darkred; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingScreen" class="loading">Loading...</div>
+    <div id="matrix" class="matrix"></div>
+    <div id="errorScreen">
+        <p>❌ SYSTEM ERROR DETECTED<br /><br />
+        Critical Failure in Boot Sequence<br />
+        Contact your system administrator.<br />
+        Error Code: 0x800F081F<br /><br />
+        Shutting down in 10 seconds...</p>
+    </div>
+    <button id="stopButton" onclick="stopMatrix()">Stop Prank</button>
+    <script>
+        const columns = Math.floor(window.innerWidth / 15);
+        const matrix = document.getElementById('matrix');
+        const drops = Array(columns).fill(1);
+
+        function drawMatrix() {
+            matrix.innerHTML = '';
+            drops.forEach((y, x) => {
+                const text = String.fromCharCode(0x30A0 + Math.random() * 96);
+                const span = document.createElement('span');
+                span.textContent = text;
+                span.style.position = 'absolute';
+                span.style.left = `${x * 15}px`;
+                span.style.top = `${y * 15}px`;
+                matrix.appendChild(span);
+
+                if (y * 15 > window.innerHeight && Math.random() > 0.975) {
+                    drops[x] = 0;
+                }
+                drops[x]++;
+            });
+        }
+
+        let intervalId;
+
+        setTimeout(() => {
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('matrix').style.display = 'block';
+            intervalId = setInterval(drawMatrix, 50);
+        }, 3000); // 3 seconds delay
+
+        function stopMatrix() {
+            clearInterval(intervalId);
+            document.getElementById('matrix').style.display = 'none';
+            document.getElementById('errorScreen').style.display = 'flex';
+            playWarningSound();
+            setTimeout(() => {
+                location.reload();
+            }, 10000); // 10 seconds before refresh
+        }
+
+        // Secret key sequence to show the button (e.g., press "S" + "T" + "O" + "P")
+        let secretCode = '';
+        document.addEventListener('keydown', (e) => {
+            secretCode += e.key.toLowerCase();
+            if (secretCode.includes('stop')) {
+                document.getElementById('stopButton').style.display = 'block';
+            }
+        });
+
+        // Warning beep sound function
+        function playWarningSound() {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            let oscillator = context.createOscillator();
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(440, context.currentTime); // A4 tone
+            oscillator.connect(context.destination);
+            oscillator.start();
+
+            let stopTime = context.currentTime + 0.3;
+            oscillator.stop(stopTime);
+
+            // Beep repeatedly every 700ms for 10 seconds
+            let count = 0;
+            let beepInterval = setInterval(() => {
+                if(count >= 14) {
+                    clearInterval(beepInterval);
+                    context.close();
+                    return;
+                }
+                oscillator = context.createOscillator();
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(440, context.currentTime);
+                oscillator.connect(context.destination);
+                oscillator.start();
+                oscillator.stop(context.currentTime + 0.3);
+                count++;
+            }, 700);
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loading...</title>
+    <style>
+        body {
+            background-color: black;
+            color: lime;
+            font-family: monospace;
+            overflow: hidden;
+        }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-size: 2em;
+            color: white;
+        }
+        .matrix {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            white-space: nowrap;
+            display: none;
+        }
+        #stopButton {
+            display: none;
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            z-index: 1000;
+        }
+        #errorScreen {
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            color: red;
+            font-family: monospace;
+            font-size: 1.5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            animation: flashRed 1s infinite alternate;
+            z-index: 999;
+        }
+        @keyframes flashRed {
+            0% { background-color: black; }
+            100% { background-color: darkred; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingScreen" class="loading">Loading...</div>
+    <div id="matrix" class="matrix"></div>
+    <div id="errorScreen">
+        <p>❌ SYSTEM ERROR DETECTED<br /><br />
+        Critical Failure in Boot Sequence<br />
+        Contact your system administrator.<br />
+        Error Code: 0x800F081F<br /><br />
+        Shutting down in 10 seconds...</p>
+    </div>
+    <button id="stopButton" onclick="stopMatrix()">Stop Prank</button>
+    <script>
+        const columns = Math.floor(window.innerWidth / 15);
+        const matrix = document.getElementById('matrix');
+        const drops = Array(columns).fill(1);
+
+        function drawMatrix() {
+            matrix.innerHTML = '';
+            drops.forEach((y, x) => {
+                const text = String.fromCharCode(0x30A0 + Math.random() * 96);
+                const span = document.createElement('span');
+                span.textContent = text;
+                span.style.position = 'absolute';
+                span.style.left = `${x * 15}px`;
+                span.style.top = `${y * 15}px`;
+                matrix.appendChild(span);
+
+                if (y * 15 > window.innerHeight && Math.random() > 0.975) {
+                    drops[x] = 0;
+                }
+                drops[x]++;
+            });
+        }
+
+        let intervalId;
+
+        setTimeout(() => {
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('matrix').style.display = 'block';
+            intervalId = setInterval(drawMatrix, 50);
+        }, 3000); // 3 seconds delay
+
+        function stopMatrix() {
+            clearInterval(intervalId);
+            document.getElementById('matrix').style.display = 'none';
+            document.getElementById('errorScreen').style.display = 'flex';
+            playWarningSound();
+            setTimeout(() => {
+                location.reload();
+            }, 10000); // 10 seconds before refresh
+        }
+
+        // Secret key sequence to show the button (e.g., press "S" + "T" + "O" + "P")
+        let secretCode = '';
+        document.addEventListener('keydown', (e) => {
+            secretCode += e.key.toLowerCase();
+            if (secretCode.includes('stop')) {
+                document.getElementById('stopButton').style.display = 'block';
+            }
+        });
+
+        // Warning beep sound function
+        function playWarningSound() {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            let oscillator = context.createOscillator();
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(440, context.currentTime); // A4 tone
+            oscillator.connect(context.destination);
+            oscillator.start();
+
+            let stopTime = context.currentTime + 0.3;
+            oscillator.stop(stopTime);
+
+            // Beep repeatedly every 700ms for 10 seconds
+            let count = 0;
+            let beepInterval = setInterval(() => {
+                if(count >= 14) {
+                    clearInterval(beepInterval);
+                    context.close();
+                    return;
+                }
+                oscillator = context.createOscillator();
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(440, context.currentTime);
+                oscillator.connect(context.destination);
+                oscillator.start();
+                oscillator.stop(context.currentTime + 0.3);
+                count++;
+            }, 700);
+        }
+    </script>
+</body>
+</html>
